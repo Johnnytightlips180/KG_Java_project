@@ -4,11 +4,20 @@
  */
 package bike_shop_application;
 
+import javax.swing.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  *
- * @author user
+ * @author Kian Barker & Gaving Judge 28/11/22
  */
 public class add_user extends javax.swing.JFrame {
+
+    private Object jOptionPane;
 
     /**
      * Creates new form add_user
@@ -37,7 +46,8 @@ public class add_user extends javax.swing.JFrame {
         password = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Add new user");
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel1.setText("Add new user");
@@ -58,6 +68,11 @@ public class add_user extends javax.swing.JFrame {
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bike_shop_application/save.png"))); // NOI18N
         jButton1.setText("Save");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -116,6 +131,61 @@ public class add_user extends javax.swing.JFrame {
     private void first_nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_first_nameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_first_nameActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
+        String dbURL = "jdbc:ucanaccess://" + msAccDB;
+
+        // Step 1: Loading or registering JDBC driver class
+        try {
+            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+        } catch (ClassNotFoundException cnfex) {
+            System.out.println("Problem in loading or "
+                    + "registering MS Access JDBC driver");
+            cnfex.printStackTrace();
+        }
+        // Step 2: Opening database connection
+        try {
+            String userName = null;
+            String firstName = null;
+            String passWord = null;
+            String surName = null;
+            int admin_id = 0;
+            
+            
+            // Step 2.A: Create and get connection using DriverManager class
+            connection = DriverManager.getConnection(dbURL);
+
+            // Step 2.B: Creating JDBC Statement
+            statement = connection.createStatement();
+            
+
+            if (first_name.getText().isEmpty() || surname.getText().isEmpty() || username.getText().isEmpty() || password.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter in all fields ");
+            } else {
+                firstName = first_name.getText().trim();
+                surName = surname.getText().trim();
+                userName = username.getText().trim();
+                passWord = password.getText().trim();
+            }
+
+            String sqlQuery = "INSERT INTO users(user_name, password, first_name, surname, admin_id) VALUES('" + userName + "', '" + passWord + "', '" + firstName + "', '" + surName + "', '" + admin_id + "')";
+            
+            statement.executeUpdate(sqlQuery);
+            String welcomeMessage = " Welcome " + firstName + " " + surName;
+            JOptionPane.showMessageDialog(null, welcomeMessage);
+            this.dispose();
+            
+        } catch (SQLException sqlex) {
+            System.err.println(sqlex.getMessage());
+        } 
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
