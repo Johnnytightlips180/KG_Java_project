@@ -4,9 +4,16 @@
  */
 package bike_shop_application;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
 /**
  *
- * @author user
+ * @author Kian Barker & Gaving Judge 28/11/22
  */
 public class current_users extends javax.swing.JFrame {
 
@@ -15,6 +22,80 @@ public class current_users extends javax.swing.JFrame {
      */
     public current_users() {
         initComponents();
+        ArrayList firstName = new ArrayList();
+        ArrayList lastName = new ArrayList();
+        ArrayList user_id = new ArrayList();
+        
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
+        String dbURL = "jdbc:ucanaccess://" + msAccDB;
+
+        // Step 1: Loading or registering JDBC driver class
+        try {
+            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+        } catch (ClassNotFoundException cnfex) {
+            System.out.println("Problem in loading or "
+                    + "registering MS Access JDBC driver");
+            cnfex.printStackTrace();
+        }
+        // Step 2: Opening database connection
+        try {
+            // Step 2.A: Create and get connection using DriverManager class
+            connection = DriverManager.getConnection(dbURL);
+
+            // Step 2.B: Creating JDBC Statement
+            statement = connection.createStatement();
+
+            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
+            resultSet = statement.executeQuery("SELECT * FROM users");
+
+            // processing returned data and printing into console
+            // Step 2.D: use data from ResultSet
+            while (resultSet.next()) {
+                firstName.add(resultSet.getString(4));
+                lastName.add(resultSet.getString(5));
+               // user_id.add(resultSet.getString(1));
+               
+            }
+            
+            System.out.println(firstName);
+            System.out.println(lastName);
+            System.out.println(user_id);
+            
+            String [] full_name = new String[firstName.size()];
+            
+            for (int i = 0; i < firstName.size(); i++)
+            {
+                full_name[i] = firstName.get(i) + " " + lastName.get(i);
+            }
+            
+            jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(full_name));
+            
+            
+            
+
+        } catch (SQLException sqlex) {
+            System.err.println(sqlex.getMessage());
+        } finally {
+
+            // Step 3: Closing database connection
+            try {
+                if (null != connection) {
+                    // cleanup resources, once after processing
+                    resultSet.close();
+                    statement.close();
+                    // and then finally close connection
+                    connection.close();
+                }
+            } catch (SQLException sqlex) {
+                System.err.println(sqlex.getMessage());
+            }
+        }
+        
+        
     }
 
     /**
@@ -29,12 +110,18 @@ public class current_users extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Check current users");
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel1.setText("List of users ");
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -59,6 +146,11 @@ public class current_users extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        // TODO add your handling code here:
+       
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
