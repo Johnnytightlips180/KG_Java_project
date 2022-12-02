@@ -3,7 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package bike_shop_application;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -11,19 +10,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-
 /**
  *
  * @author Kian Barker & Gaving Judge 28/11/22
  */
-public class rent_bike extends javax.swing.JFrame {
+public class purchase_item extends javax.swing.JFrame {
 
     /**
-     * Creates new form rent_bike
+     * Creates new form purchase_item
      */
-    public rent_bike() {
+    public purchase_item() {
         initComponents();
-        item_rented.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Push Bike", "Electric Bike", "Petrol Bike" }));
+        what_item_to_purchase.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Push Bike", "Electric Bike", "Petrol Bike", "Helmets", "Lights", "Chains" }));
     }
 
     /**
@@ -36,33 +34,29 @@ public class rent_bike extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        user_id = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        what_item_to_purchase = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
-        item_rented = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
-        how_many_items_rented = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        how_many_purchase = new javax.swing.JTextField();
+        save_purchase = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Rent a bike");
+        setTitle("Purchase an item");
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel1.setText("Rent a bike or accessory");
+        jLabel1.setText("Purchase an item ");
 
-        jLabel2.setText("User ID:");
+        jLabel2.setText("What item do you wish to purchase:");
 
-        jLabel3.setText("item rented:");
+        what_item_to_purchase.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        item_rented.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel3.setText("How many items do you want:");
 
-        jLabel4.setText("How many items");
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bike_shop_application/save.png"))); // NOI18N
-        jButton1.setText("Save");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        save_purchase.setIcon(new javax.swing.ImageIcon(getClass().getResource("/bike_shop_application/save.png"))); // NOI18N
+        save_purchase.setText("Save");
+        save_purchase.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                save_purchaseActionPerformed(evt);
             }
         });
 
@@ -71,96 +65,50 @@ public class rent_bike extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addGap(57, 57, 57)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(user_id)
-                            .addComponent(item_rented, 0, 143, Short.MAX_VALUE)
-                            .addComponent(how_many_items_rented)
-                            .addComponent(jButton1))))
-                .addContainerGap(146, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(what_item_to_purchase, 0, 186, Short.MAX_VALUE)
+                        .addComponent(how_many_purchase))
+                    .addComponent(save_purchase, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(58, 58, 58)
+                .addGap(64, 64, 64)
                 .addComponent(jLabel1)
-                .addGap(50, 50, 50)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(user_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel2)
+                    .addComponent(what_item_to_purchase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(item_rented, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(how_many_purchase, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(how_many_items_rented, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43)
-                .addComponent(jButton1)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addComponent(save_purchase)
+                .addContainerGap(146, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:  
+    private void save_purchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save_purchaseActionPerformed
+        // TODO add your handling code here:
         ArrayList readValues = new ArrayList();
-        String item_to_rent = item_rented.getSelectedItem().toString();
-        int user_id_num = 0;
-        int number = 0;
         Connection connection = null;
         Statement statement = null;
         ResultSet resultSet = null;
         String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
         String dbURL = "jdbc:ucanaccess://" + msAccDB;
-
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-            
-
-            if (user_id.getText().isEmpty() || how_many_items_rented.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please enter in all fields ");
-            } else {
-                String tempUser_id = user_id.getText();
-                user_id_num = Integer.parseInt(tempUser_id);
-                String tempNumber = how_many_items_rented.getText();
-                number = Integer.parseInt(tempNumber);
-                
-            }
-            
-
-            String sqlQuery = "INSERT INTO rented_stock(user_id, item_rented, how_many_items, Overdue_date) VALUES('" + user_id_num + "', '" + item_to_rent + "', '" + number + "', '2022-12-03')";
-            
-            statement.executeUpdate(sqlQuery);
-            
-            
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } 
+        
         
         try {
             // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
@@ -211,30 +159,46 @@ public class rent_bike extends javax.swing.JFrame {
                 System.err.println(sqlex.getMessage());
             }
         }
-       
-        String subtract = how_many_items_rented.getText();
+        
+        String tempValue = what_item_to_purchase.getSelectedItem().toString();
+        String subtract = how_many_purchase.getText();
         int newSubtract = Integer.parseInt(subtract);
         
         
         String value = "";
-        int number_2 = 0;
+        int number = 0;
         
-        if (item_to_rent == "Push Bike")
+        if (tempValue == "Push Bike")
         {
             int x = (int) readValues.get(0);
             value = "push_bikes";
-            number_2 = x - newSubtract;
+            number = x - newSubtract;
                     
-        } else if (item_to_rent == "Electric Bike")
+        } else if (tempValue == "Electric Bike")
         {
             int x = (int) readValues.get(1);
             value = "electric_bike";
-            number_2 = x - newSubtract;
-        }  else           
+            number = x - newSubtract;
+        }  else if (tempValue == "Petrol Bike")
         {
             int x = (int) readValues.get(2);
             value = "petrol_bike";
-            number_2 = x - newSubtract;
+            number = x - newSubtract;
+        }  else if (tempValue == "Helmets")
+        {
+            int x = (int) readValues.get(3);
+            value = "helmets";
+            number = x - newSubtract;
+        }  else if (tempValue == "Lights")
+        {
+            int x = (int) readValues.get(4);
+            value = "lights";
+            number = x - newSubtract;
+        } else 
+        {
+            int x = (int) readValues.get(5);
+            value = "chains";
+            number = x - newSubtract;
         }
         
         // Step 1: Loading or registering JDBC driver class
@@ -257,18 +221,16 @@ public class rent_bike extends javax.swing.JFrame {
             statement = connection.createStatement();
             
             
-            String sqlQuery = "UPDATE current_stock SET " + value + " = " + number_2 + " WHERE product_id = 1";
+            String sqlQuery = "UPDATE current_stock SET " + value + " = " + number + " WHERE product_id = 1";
             statement.executeUpdate(sqlQuery);
-            String welcomeMessage = "You have rented a " + item_to_rent + " for 2 weeks " ;
+            String welcomeMessage = "Thank you for your purchase " ;
             JOptionPane.showMessageDialog(null, welcomeMessage);
             this.dispose();
             
         } catch (SQLException sqlex) {
             System.err.println(sqlex.getMessage());
-        }
-        
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
+        } 
+    }//GEN-LAST:event_save_purchaseActionPerformed
 
     /**
      * @param args the command line arguments
@@ -287,32 +249,34 @@ public class rent_bike extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(rent_bike.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(purchase_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(rent_bike.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(purchase_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(rent_bike.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(purchase_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(rent_bike.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(purchase_item.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new rent_bike().setVisible(true);
+                new purchase_item().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField how_many_items_rented;
-    private javax.swing.JComboBox<String> item_rented;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JTextField how_many_purchase;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JTextField user_id;
+    private javax.swing.JButton save_purchase;
+    private javax.swing.JComboBox<String> what_item_to_purchase;
     // End of variables declaration//GEN-END:variables
+
+    private boolean readValues(int i) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
