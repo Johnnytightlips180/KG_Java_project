@@ -3,11 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package bike_shop_application;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 /**
@@ -72,10 +68,9 @@ public class purchase_item extends javax.swing.JFrame {
                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(what_item_to_purchase, 0, 186, Short.MAX_VALUE)
-                        .addComponent(how_many_purchase))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(what_item_to_purchase, 0, 186, Short.MAX_VALUE)
+                    .addComponent(how_many_purchase)
                     .addComponent(save_purchase, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(144, Short.MAX_VALUE))
         );
@@ -103,63 +98,10 @@ public class purchase_item extends javax.swing.JFrame {
     private void save_purchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save_purchaseActionPerformed
         // TODO add your handling code here:
         ArrayList readValues = new ArrayList();
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
-        
-        
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM current_stock");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                readValues.add(resultSet.getInt(2));
-                readValues.add(resultSet.getInt(3));
-                readValues.add(resultSet.getInt(4));
-                readValues.add(resultSet.getInt(5));
-                readValues.add(resultSet.getInt(6));
-                readValues.add(resultSet.getInt(7));
-               
-            }
-             
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
-        
+        ArrayList salesReference = new ArrayList();
+        LocalDate date = java.time.LocalDate.now();
+        AllConnections connect = new AllConnections();
+        connect.selectAllCurrentStock(readValues);
         String tempValue = what_item_to_purchase.getSelectedItem().toString();
         String subtract = how_many_purchase.getText();
         int newSubtract = Integer.parseInt(subtract);
@@ -167,7 +109,7 @@ public class purchase_item extends javax.swing.JFrame {
         
         String value = "";
         int number = 0;
-        
+     
         if (tempValue == "Push Bike")
         {
             int x = (int) readValues.get(0);
@@ -201,35 +143,13 @@ public class purchase_item extends javax.swing.JFrame {
             number = x - newSubtract;
         }
         
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        
-        // Step 2: Opening database connection
-        try {
-            
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-            
-            
-            String sqlQuery = "UPDATE current_stock SET " + value + " = " + number + " WHERE product_id = 1";
-            statement.executeUpdate(sqlQuery);
-            String welcomeMessage = "Thank you for your purchase " ;
-            JOptionPane.showMessageDialog(null, welcomeMessage);
-            this.dispose();
-            
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } 
+        connect.updateCurrentStock(value, number);
+        connect.motifySales(what_item_to_purchase.getSelectedItem().toString(), newSubtract, date);
+        connect.motifySalesReferenceList(salesReference);
+  
+        String welcomeMessage = "You have purchase a " + what_item_to_purchase.getSelectedItem() + " Your reference number is " + salesReference.get(salesReference.size() - 1);
+        JOptionPane.showMessageDialog(null, welcomeMessage);
+        this.dispose();   
     }//GEN-LAST:event_save_purchaseActionPerformed
 
     /**

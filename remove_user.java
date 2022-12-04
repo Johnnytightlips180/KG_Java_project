@@ -4,11 +4,7 @@
  */
 package bike_shop_application;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -23,78 +19,19 @@ public class remove_user extends javax.swing.JFrame {
      */
     public remove_user() {
         initComponents();
+        user_id_area.setEditable(false);
         ArrayList firstName = new ArrayList();
         ArrayList lastName = new ArrayList();
         ArrayList user_id = new ArrayList();
-        
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
 
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
+        AllConnections connect = new AllConnections();
+        connect.selectFromUsersNameAndId(firstName, lastName, user_id);
 
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM users");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                firstName.add(resultSet.getString(4));
-                lastName.add(resultSet.getString(5));
-                user_id.add(resultSet.getString(1));
-               
-            }
-            
-            System.out.println(firstName);
-            System.out.println(lastName);
-            System.out.println(user_id);
-            
-            String [] full_name = new String[firstName.size()];
-            
-            for (int i = 0; i < firstName.size(); i++)
-            {
-                full_name[i] = firstName.get(i) + " " + lastName.get(i) + " - " + user_id.get(i);
-            }
-            
-            user_name_and_id.setModel(new javax.swing.DefaultComboBoxModel<>(full_name));
-            
-            
-            
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
+        for(int i = 0; i < firstName.size(); i++)
+        {
+            user_id_area.append((String) firstName.get(i)+ " " + lastName.get(i) + ": " + user_id.get(i) + "\n");
+        }      
+   
     }
 
     /**
@@ -111,7 +48,8 @@ public class remove_user extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         remove_user_button = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        user_name_and_id = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        user_id_area = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Remove a user");
@@ -137,44 +75,44 @@ public class remove_user extends javax.swing.JFrame {
 
         jLabel3.setText("Enter id number to remove user");
 
-        user_name_and_id.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        user_id_area.setColumns(20);
+        user_id_area.setRows(5);
+        jScrollPane1.setViewportView(user_id_area);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(73, 73, 73)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(50, 50, 50)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(user_name_and_id, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(remove_user_button, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(user_id_nums, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(81, 91, Short.MAX_VALUE))
+                .addContainerGap(114, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(65, 65, 65)
+                .addGap(21, 21, 21)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(user_name_and_id, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(user_id_nums, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(user_id_nums, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addComponent(remove_user_button)
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
 
         pack();
@@ -185,53 +123,19 @@ public class remove_user extends javax.swing.JFrame {
     }//GEN-LAST:event_user_id_numsActionPerformed
 
     private void remove_user_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_remove_user_buttonActionPerformed
-        // TODO add your handling code here:
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
+        String id_num = null;
 
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
+        if (user_id_nums.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter in all fields ");
+        } else {
+            id_num = user_id_nums.getText().trim();
         }
-        // Step 2: Opening database connection
-        try {
-            String id_num = null;
-            
-            
+        
+        AllConnections connect = new AllConnections();
+        connect.remove_user(id_num);
+        this.dispose();
 
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
 
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            if (user_id_nums.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please enter in all fields ");
-            } else {
-                id_num = user_id_nums.getText().trim();
-                
-                
-            }
-            
-            String sqlQuery = " DELETE FROM users WHERE user_id='" + id_num + "'";
-
-            statement.executeUpdate(sqlQuery);
-            String welcomeMessage = "The user has been removed from the database ";
-          //  String welcomeMessage = " Welcome " + firstName + " " + surName;
-            JOptionPane.showMessageDialog(null, welcomeMessage);
-            this.dispose();
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        }
     }//GEN-LAST:event_remove_user_buttonActionPerformed
 
     /**
@@ -273,8 +177,9 @@ public class remove_user extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton remove_user_button;
+    private javax.swing.JTextArea user_id_area;
     private javax.swing.JTextField user_id_nums;
-    private javax.swing.JComboBox<String> user_name_and_id;
     // End of variables declaration//GEN-END:variables
 }

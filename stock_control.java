@@ -4,11 +4,6 @@
  */
 package bike_shop_application;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -24,128 +19,23 @@ public class stock_control extends javax.swing.JFrame {
     public stock_control() {
         initComponents();
         ArrayList readValues = new ArrayList();
-        ArrayList readRentedValues = new ArrayList();
-        ArrayList howManyValues = new ArrayList();
+        ArrayList item_rented = new ArrayList();
+        ArrayList how_many = new ArrayList();
         
         stock_items.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Push Bike", "Electric Bike", "Petrol Bike", "HelmetS", "Lights", "Chains" }));
         current_stock.setEditable(false);
         rented_stock.setEditable(false);
-       
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
-        
-        
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
 
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
+        AllConnections connect = new AllConnections();
+        connect.selectAllCurrentStock(readValues);
 
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM current_stock");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                readValues.add(resultSet.getInt(2));
-                readValues.add(resultSet.getInt(3));
-                readValues.add(resultSet.getInt(4));
-                readValues.add(resultSet.getInt(5));
-                readValues.add(resultSet.getInt(6));
-                readValues.add(resultSet.getInt(7));
-               
-            }
-             
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
-        
-     //   System.out.println(readValues.getClass());
-     //   System.out.println(readValues.get(1).getClass());
-        int value1 = 0;
-        value1 = (int) readValues.get(1);
-       
         current_stock.append((String) "Push bike: " + readValues.get(0)+ "\nElectric bike: " + readValues.get(1) + "\nPetrol Bike: " + readValues.get(2)+ "\nHelmets:" + readValues.get(3) + "\nLights: " + readValues.get(4) + "\nChains : " + readValues.get(5));
-        
-        
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
 
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
+        connect.selectFromRentStockItem(item_rented, how_many);
 
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM rented_stock");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                readRentedValues.add(resultSet.getInt(4));
-                howManyValues.add(resultSet.getString(3));
-                
-               
-            }
-             
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
-        
-        for(int i = 0; i < readRentedValues.size(); i++)
+        for(int i = 0; i < item_rented.size(); i++)
         {
-            rented_stock.append((String) howManyValues.get(i)+ ": " + readRentedValues.get(i) + "\n");
+            rented_stock.append((String) item_rented.get(i)+ ": " + how_many.get(i) + "\n");
         }           
         
     }
@@ -270,64 +160,8 @@ public class stock_control extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         ArrayList readValues = new ArrayList();
-        
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
-        
-        
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
+        AllConnections connect = new AllConnections();
 
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM current_stock");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                readValues.add(resultSet.getInt(2));
-                readValues.add(resultSet.getInt(3));
-                readValues.add(resultSet.getInt(4));
-                readValues.add(resultSet.getInt(5));
-                readValues.add(resultSet.getInt(6));
-                readValues.add(resultSet.getInt(7));
-               
-            }
-             
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
-        
         String tempValue = stock_items.getSelectedItem().toString();
         String subtract = how_many_items.getText();
         int newSubtract = Integer.parseInt(subtract);
@@ -369,32 +203,7 @@ public class stock_control extends javax.swing.JFrame {
             number = x - newSubtract;
         }
         
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-
-        // Step 2: Opening database connection
-        try {
-
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            String sqlQuery = "UPDATE current_stock SET " + value + " = " + number + " WHERE product_id = 1";
-            System.out.println(sqlQuery);
-            statement.executeUpdate(sqlQuery);
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        }
+        connect.updateCurrentStock(value, number);
         
         String welcomeMessage = " you have subtracted " + newSubtract + " " + tempValue;
         JOptionPane.showMessageDialog(null, welcomeMessage);
@@ -404,64 +213,9 @@ public class stock_control extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         ArrayList readValues = new ArrayList();
-        
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
-        
-        
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
+        AllConnections connect = new AllConnections();
+        connect.selectAllCurrentStock(readValues);
 
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM current_stock");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                readValues.add(resultSet.getInt(2));
-                readValues.add(resultSet.getInt(3));
-                readValues.add(resultSet.getInt(4));
-                readValues.add(resultSet.getInt(5));
-                readValues.add(resultSet.getInt(6));
-                readValues.add(resultSet.getInt(7));
-               
-            }
-             
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
-        
         String tempValue = stock_items.getSelectedItem().toString();
         String subtract = how_many_items.getText();
         int newAdd = Integer.parseInt(subtract);
@@ -503,31 +257,7 @@ public class stock_control extends javax.swing.JFrame {
             number = x + newAdd;
         }
         
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-
-        // Step 2: Opening database connection
-        try {
-
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            String sqlQuery = "UPDATE current_stock SET " + value + " = " + number + " WHERE product_id = 1";
-            statement.executeUpdate(sqlQuery);
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        }
+        connect.updateCurrentStock(value, number);
         
         String welcomeMessage = " you have added " + newAdd + " " + tempValue;
         JOptionPane.showMessageDialog(null, welcomeMessage);

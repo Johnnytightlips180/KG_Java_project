@@ -4,11 +4,8 @@
  */
 package bike_shop_application;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
@@ -48,7 +45,7 @@ public class rent_bike extends javax.swing.JFrame {
         setTitle("Rent a bike");
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel1.setText("Rent a bike or accessory");
+        jLabel1.setText("Rent a bike ");
 
         jLabel2.setText("User ID:");
 
@@ -114,103 +111,29 @@ public class rent_bike extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:  
+        AllConnections connect = new AllConnections();
         ArrayList readValues = new ArrayList();
+        ArrayList referenceNum = new ArrayList();
+        LocalDate date = java.time.LocalDate.now();
         String item_to_rent = item_rented.getSelectedItem().toString();
         int user_id_num = 0;
         int number = 0;
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
 
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
+        if (user_id.getText().isEmpty() || how_many_items_rented.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Please enter in all fields ");
+        } else {
+            String tempUser_id = user_id.getText();
+            user_id_num = Integer.parseInt(tempUser_id);
+            String tempNumber = how_many_items_rented.getText();
+            number = Integer.parseInt(tempNumber);
+
         }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-            
-
-            if (user_id.getText().isEmpty() || how_many_items_rented.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please enter in all fields ");
-            } else {
-                String tempUser_id = user_id.getText();
-                user_id_num = Integer.parseInt(tempUser_id);
-                String tempNumber = how_many_items_rented.getText();
-                number = Integer.parseInt(tempNumber);
-                
-            }
-            
-
-            String sqlQuery = "INSERT INTO rented_stock(user_id, item_rented, how_many_items, Overdue_date) VALUES('" + user_id_num + "', '" + item_to_rent + "', '" + number + "', '2022-12-03')";
-            
-            statement.executeUpdate(sqlQuery);
-            
-            
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } 
         
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-
-            // Step 2.C: Executing SQL &amp; retrieve data into ResultSet
-            resultSet = statement.executeQuery("SELECT * FROM current_stock");
-
-            // processing returned data and printing into console
-            // Step 2.D: use data from ResultSet
-            while (resultSet.next()) {
-                readValues.add(resultSet.getInt(2));
-                readValues.add(resultSet.getInt(3));
-                readValues.add(resultSet.getInt(4));
-                readValues.add(resultSet.getInt(5));
-                readValues.add(resultSet.getInt(6));
-                readValues.add(resultSet.getInt(7));
-               
-            }
-             
-
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } finally {
-
-            // Step 3: Closing database connection
-            try {
-                if (null != connection) {
-                    // cleanup resources, once after processing
-                    resultSet.close();
-                    statement.close();
-                    // and then finally close connection
-                    connection.close();
-                }
-            } catch (SQLException sqlex) {
-                System.err.println(sqlex.getMessage());
-            }
-        }
+        
+        connect.insertRented(user_id_num, item_to_rent, number, date);
+        connect.selectAllCurrentStock(readValues);
+        
+        
        
         String subtract = how_many_items_rented.getText();
         int newSubtract = Integer.parseInt(subtract);
@@ -237,37 +160,13 @@ public class rent_bike extends javax.swing.JFrame {
             number_2 = x - newSubtract;
         }
         
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
+        connect.updateCurrentStock(value, number_2);
+        connect.selectFromRentStock(referenceNum);
         
-        // Step 2: Opening database connection
-        try {
-            
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-            
-            
-            String sqlQuery = "UPDATE current_stock SET " + value + " = " + number_2 + " WHERE product_id = 1";
-            statement.executeUpdate(sqlQuery);
-            String welcomeMessage = "You have rented a " + item_to_rent + " for 2 weeks " ;
-            JOptionPane.showMessageDialog(null, welcomeMessage);
-            this.dispose();
-            
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        }
-        
-        
+        String welcomeMessage = "You have rented a " + item_to_rent + " for 2 weeks. Your reference number is " + referenceNum.get(referenceNum.size() - 1);
+        JOptionPane.showMessageDialog(null, welcomeMessage);
+        this.dispose();
+   
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

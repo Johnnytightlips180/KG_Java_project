@@ -6,7 +6,7 @@ package bike_shop_application;
 
 /**
  *
- * @author user
+ * @author Kian Barker & Gaving Judge 28/11/22
  */
 public class Bike_shop_application {
 
@@ -15,6 +15,7 @@ public class Bike_shop_application {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        new menu().setVisible(true);
     }
     
 }
