@@ -134,56 +134,26 @@ public class add_user extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-        String msAccDB = "..//Bike_Shop1.accdb"; // path to the DB file
-        String dbURL = "jdbc:ucanaccess://" + msAccDB;
-
-        // Step 1: Loading or registering JDBC driver class
-        try {
-            // Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-        } catch (ClassNotFoundException cnfex) {
-            System.out.println("Problem in loading or "
-                    + "registering MS Access JDBC driver");
-            cnfex.printStackTrace();
-        }
-        // Step 2: Opening database connection
-        try {
-            String userName = null;
-            String firstName = null;
-            String passWord = null;
-            String surName = null;
-            int admin_id = 0;
-            
-            
-            // Step 2.A: Create and get connection using DriverManager class
-            connection = DriverManager.getConnection(dbURL);
-
-            // Step 2.B: Creating JDBC Statement
-            statement = connection.createStatement();
-            
-
-            if (first_name.getText().isEmpty() || surname.getText().isEmpty() || username.getText().isEmpty() || password.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Please enter in all fields ");
+        String userName = null;
+        String firstName = null;
+        String passWord = null;
+        String surName = null;
+        int admin_id = 0;
+        
+        if (first_name.getText().isEmpty() || surname.getText().isEmpty() || username.getText().isEmpty() || password.getText().isEmpty()) {
+               JOptionPane.showMessageDialog(null, "Please enter in all fields ");
             } else {
                 firstName = first_name.getText().trim();
                 surName = surname.getText().trim();
                 userName = username.getText().trim();
                 passWord = password.getText().trim();
             }
-
-            String sqlQuery = "INSERT INTO users(user_name, password, first_name, surname, admin_id) VALUES('" + userName + "', '" + passWord + "', '" + firstName + "', '" + surName + "', '" + admin_id + "')";
+        
+        AllConnections connect = new AllConnections();
+        connect.add_user(userName, passWord, firstName, surName, admin_id);
+  
             
-            statement.executeUpdate(sqlQuery);
-            String welcomeMessage = " Welcome " + firstName + " " + surName;
-            JOptionPane.showMessageDialog(null, welcomeMessage);
-            this.dispose();
-            
-        } catch (SQLException sqlex) {
-            System.err.println(sqlex.getMessage());
-        } 
+        this.dispose();
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
